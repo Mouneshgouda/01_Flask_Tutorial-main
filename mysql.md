@@ -69,3 +69,16 @@ if __name__ == '__main__':
 </body>
 </html>
 ```
+```mysql
+CREATE DATABASE IF NOT EXISTS mydb;
+
+USE mydb;
+
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,   -- Automatically increments for each new user
+    username VARCHAR(100) NOT NULL UNIQUE,  -- Username, must be unique
+    email VARCHAR(100) NOT NULL UNIQUE     -- Email, must be unique
+);
+
+select *from user;
+```
