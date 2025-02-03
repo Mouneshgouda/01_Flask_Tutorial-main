@@ -46,6 +46,7 @@ virtualenv venv
 #Activate a virtual environment based on your OS
 For windows > venv\Scripts\activate
 For linux > source ./venv/bin/activate
+source myenv/bin/active
 
 ```
 #If your Facing Any error Then Try this
