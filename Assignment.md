@@ -96,8 +96,8 @@ This repository contains **75 Flask web development project ideas** categorized 
 
 ## How to Use These Ideas
 
-```bash
-/flask_project
+~~~python
+## How to Use These Ideas  /flask_project
 │── /static              # Static files (CSS, JS, Images)
 │── /templates           # HTML templates
 │── app.py               # Main Flask application file
@@ -105,3 +105,14 @@ This repository contains **75 Flask web development project ideas** categorized 
 │── .env                 # Environment variables (optional)
 │── README.md            # Project documentation
 │── .gitignore           # Git ignore file
+
+~~~
+
+- Pick a project based on your **Roll number**.  
+- Start by creating a **Flask app** and setting up **routes, models, and template,static**.  
+- Use **Flask-SQLAlchemy** for database handling.  
+- Use **Flask-WTF** for forms and input validation.  
+- Integrate **Bootstrap or Tailwind CSS** for UI design.  
+- Deploy using **Heroku, Vercel, or Render**.  
+
+Happy Coding! 🚀  
