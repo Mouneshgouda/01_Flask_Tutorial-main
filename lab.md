@@ -1,89 +1,64 @@
 -3
 - ### app.py
 ``` python
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
 
 app = Flask(__name__)
-
-# Directory to save uploaded files
 UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['ALLOWED_EXTENSIONS'] = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-
-# Check allowed file extensions
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @app.route('/')
 def index():
-    # Get the list of files in the 'uploads' folder
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('index.html', files=files)
+    return render_template('upload.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return redirect(request.url)
-    
+        return "No file part"
     file = request.files['file']
     if file.filename == '':
-        return redirect(request.url)
-    
-    if file and allowed_file(file.filename):
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filename)
-        return redirect('/')
+        return "No selected file"
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+    return redirect(url_for('download_page', filename=file.filename))
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/download/<filename>')
+def download_page(filename):
+    return render_template('download.html', filename=filename)
+
+@app.route('/download/file/<filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 if __name__ == '__main__':
-    # Make sure the upload folder exists
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-    
     app.run(debug=True)
+
 ```
-- ### index.html
+- ### download.html
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload and Download</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
-</head>
-<body>
-    <div class="container">
-        <h1>Upload and Download Files</h1>
-        
-        <!-- Form to upload file -->
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button type="submit">Upload</button>
-        </form>
+<h1>Download File</h1>
+<p>Click the link below to download your file:</p>
+<a href="/download/{{ filename }}">{{ filename }}</a>
 
-        <!-- Display uploaded files -->
-        <div class="files-list">
-            <h2>Uploaded Files:</h2>
-            <ul>
-                <!-- Loop through the files passed from Flask -->
-                {% for filename in files %}
-                    <li><a href="/uploads/{{ filename }}" target="_blank">{{ filename }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</body>
-</html>
+```
+- ### upload.html
+```html
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+<h1>Upload a File</h1>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="Upload">
+</form>
 
 
 
 ```
-- ### uploads
+
+
 
 - #### File
 
